@@ -1,4 +1,4 @@
-function reduxAsyncMiddleware({ dispatch, getState }) {
+function reduxSlimAsync({ dispatch, getState }) {
   return next => (action) => {
     const {
       types,
@@ -35,23 +35,22 @@ function reduxAsyncMiddleware({ dispatch, getState }) {
           throw new Error('formatData should return an object.');
         }
 
-        dispatch(
-          Object.assign({},
-            payload,
-            formattedData,
-            { type: successType },
-          ),
-        );
+        dispatch(Object.assign(
+          {},
+          payload,
+          formattedData,
+          { type: successType },
+        ));
       })
       .catch(error =>
-        dispatch(
-          Object.assign({}, payload, {
+        dispatch(Object.assign(
+          {},
+          payload, {
             error,
             type: errorType,
-          }),
-        ),
-      );
+          },
+        )));
   };
 }
 
-export default reduxAsyncMiddleware;
+export default reduxSlimAsync;
