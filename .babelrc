@@ -1,0 +1,10 @@
+{
+  "presets": ["stage-2"],
+  "env": {
+    "commonjs": {
+      "plugins": [
+        ["transform-es2015-modules-commonjs", { "loose": true }]
+      ]
+    }
+  }
+}
