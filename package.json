@@ -1,0 +1,27 @@
+{
+  "name": "redux-async-middleware",
+  "version": "0.1.0",
+  "description": "A Redux middleware to ease the pain of tracking an async action status",
+  "main": "lib/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gabri3l/redux-async-middleware.git"
+  },
+  "keywords": [
+    "redux",
+    "redux-middleware",
+    "async"
+  ],
+  "author": "Gabriele Cimato <gabriele.cimato@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Gabri3l/redux-async-middleware/issues"
+  },
+  "homepage": "https://github.com/Gabri3l/redux-async-middleware#readme"
+}
