@@ -1,6 +1,6 @@
 {
   "name": "redux-slim-async",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A Redux middleware to ease the pain of tracking an async action status",
   "main": "lib/index.js",
   "directories": {
