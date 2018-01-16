@@ -16,7 +16,7 @@ or
 
 You then need to enable the middleware with the `applyMiddleware()` method as follows:
 
-```
+```js
 import { applyMiddleware, createStore, compose } from 'redux';
 import slimAsync from 'redux-slim-async';
 import rootReducer from '../reducers';
@@ -33,7 +33,7 @@ export default store;
 
 When handling any kind of asyn requests in Redux most of the time we need to track the state of such request. This means we need to know when the action is pending, completed successfully or completed with errors. A common pattern for it that leverages `redux-thunk` is the following:
 
-```
+```js
 import {
   FETCH_DATA_ERROR,
   FETCH_DATA_PENDING,
@@ -81,7 +81,7 @@ The `redux-slim-async` provides an intuitive and condensed interface with some n
 
 After the middleware has been plugged in you can use it almost like you would normally dispatch an action, to follow our previous example:
 
-```
+```js
 function fetchData() {
   return {
     types: [
@@ -98,7 +98,7 @@ This handles dispatching all the actions for different statuses: pending, error 
 
 There are a few additions on top of what we saw so far. You can define a function that is in charge of preventing the request to be submitted based on your state.
 
-```
+```js
 function fetchData() {
   return {
     types: [
@@ -116,7 +116,7 @@ This simply makes sure the request is sent only if the condition returned by the
 
 Another useful function is the `formatData` one. Given the data returned from the request you can manipulate it or format it before it is sent to the manager.
 
-```
+```js
 function fetchData() {
   return {
     types: [
