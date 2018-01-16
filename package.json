@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Gabri3l/redux-async-middleware.git"
+    "url": "git+https://github.com/Gabri3l/redux-slim-async.git"
   },
   "keywords": [
     "redux",
@@ -30,9 +30,9 @@
   "author": "Gabriele Cimato <gabriele.cimato@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Gabri3l/redux-async-middleware/issues"
+    "url": "https://github.com/Gabri3l/redux-slim-async/issues"
   },
-  "homepage": "https://github.com/Gabri3l/redux-async-middleware#readme",
+  "homepage": "https://github.com/Gabri3l/redux-slim-async#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
