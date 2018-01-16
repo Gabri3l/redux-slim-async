@@ -6,7 +6,9 @@
     "node": true
   },
   "globals": {
-    "expect": true
+    "expect": true,
+    "describe": true,
+    "it": true
   },
   "rules": {
     "react/jsx-filename-extension": 0,

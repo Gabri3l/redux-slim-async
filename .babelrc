@@ -5,6 +5,7 @@
     "transform-es2015-function-name",
     "transform-es2015-arrow-functions",
     "transform-es2015-block-scoped-functions",
+    "transform-object-rest-spread",
     ["transform-es2015-classes", { "loose": true }],
     "transform-es2015-object-super",
     "transform-es2015-shorthand-properties",
