@@ -61,7 +61,7 @@ function fetchMyDataSuccess(payload) {
 }
 
 function fetchData() {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(fetchDataPending());
 
     fetch('https://myapi.com/mydata')
@@ -88,9 +88,9 @@ function fetchData() {
       FETCH_DATA_PENDING,
       FETCH_DATA_SUCCESS,
       FETCH_DATA_ERROR,
-    ]
-  },
-  callAPI: fetch('https://myapi.com/mydata').then(res => res.json()),
+    ],
+    callAPI: fetch('https://myapi.com/mydata').then(res => res.json()),
+  };
 }
 ```
 
@@ -105,10 +105,10 @@ function fetchData() {
       FETCH_DATA_PENDING,
       FETCH_DATA_SUCCESS,
       FETCH_DATA_ERROR,
-    ]
-  },
-  callAPI: fetch('https://myapi.com/mydata').then(res => res.json()),
-  shouldCallAPI: (state) => state.myData === null,
+    ],
+    callAPI: fetch('https://myapi.com/mydata').then(res => res.json()),
+    shouldCallAPI: (state) => state.myData === null,
+  };
 }
 ```
 
@@ -123,14 +123,14 @@ function fetchData() {
       FETCH_DATA_PENDING,
       FETCH_DATA_SUCCESS,
       FETCH_DATA_ERROR,
-    ]
-  },
-  callAPI: fetch('https://myapi.com/mydata').then(res => res.json()),
-  shouldCallAPI: (state) => state.myData === null,
-  formatData: (data) => ({
-    favorites: data.favorites,
-    latestFavorite: data.latest_favorite,
-  })
+    ],
+    callAPI: fetch('https://myapi.com/mydata').then(res => res.json()),
+    shouldCallAPI: (state) => state.myData === null,
+    formatData: (data) => ({
+      favorites: data.favorites,
+      latestFavorite: data.latest_favorite,
+    }),
+  };
 }
 ```
 
