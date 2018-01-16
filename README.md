@@ -1,4 +1,4 @@
-# Rredux Slim Async
+# Redux Slim Async
 [![npm version](https://img.shields.io/npm/v/redux-slim-async.svg?style=flat-square)](https://www.npmjs.com/package/redux-slim-async)
 [![npm downloads](https://img.shields.io/npm/dm/redux-slim-async.svg?style=flat-square)](https://www.npmjs.com/package/redux-slim-async)
 
