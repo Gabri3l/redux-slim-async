@@ -12,8 +12,8 @@ const plugins = [
 
 const filename = `redux-slim-async${NODE_ENV === 'production' ? '.min' : ''}.js`;
 
-NODE_ENV === 'production' && plugins.push(
-  new webpack.optimize.UglifyJsPlugin({
+if (NODE_ENV === 'production') {
+  plugins.push(new webpack.optimize.UglifyJsPlugin({
     compressor: {
       pure_getters: true,
       unsafe: true,
@@ -21,8 +21,8 @@ NODE_ENV === 'production' && plugins.push(
       screw_ie8: true,
       warnings: false,
     },
-  })
-);
+  }));
+}
 
 module.exports = () => ({
   module: {
@@ -30,17 +30,14 @@ module.exports = () => ({
       { test: /\.js$/, loaders: ['babel-loader'], exclude: /node_modules/ },
     ],
   },
-
   entry: [
     './src/index',
   ],
-
   output: {
     path: path.join(__dirname, 'dist'),
     filename,
     library: 'ReduxSlimAsync',
     libraryTarget: 'umd',
   },
-
   plugins,
 });

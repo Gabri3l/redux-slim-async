@@ -22,6 +22,9 @@ function reduxSlimAsync({ dispatch, getState }) {
     if (typeof formatData !== 'function') {
       throw new Error('Expected formatData to be a function.');
     }
+    if (typeof shouldCallAPI !== 'function') {
+      throw new Error('Expected shouldCallAPI to be a function.');
+    }
     if (!shouldCallAPI(getState())) return null;
 
     const [pendingType, successType, errorType] = types;
@@ -32,7 +35,7 @@ function reduxSlimAsync({ dispatch, getState }) {
       .then((response) => {
         const formattedData = formatData(response);
         if (typeof formattedData !== 'object') {
-          throw new Error('formatData should return an object.');
+          throw new Error('Expected formatData to return an object.');
         }
 
         dispatch(Object.assign(
@@ -41,15 +44,20 @@ function reduxSlimAsync({ dispatch, getState }) {
           formattedData,
           { type: successType },
         ));
+
+        return Promise.resolve(getState());
       })
-      .catch(error =>
+      .catch(error => {
         dispatch(Object.assign(
           {},
           payload, {
             error,
             type: errorType,
           },
-        )));
+        ));
+
+        return Promise.reject(getState(), error);
+      });
   };
 }
 

@@ -139,11 +139,11 @@ At the current state of the middleware these fields are added outside the payloa
 
 ## RoadMap
 
-- [ ] Add test suite
+- [x] Add test suite
 - [x] Add continuous integration
 - [ ] Allow to skip dispatching some of the actions to track status
 - [ ] Make the middleware compliant to FSA directives
-- [ ] Allow to dispatch other actions after the current one has succeded or errored out
+- [x] Allow to dispatch other actions after the current one has succeded or errored out
 - [ ] Allow setting up a custom prefix or suffix for action types at initiation time
 
 ## License
