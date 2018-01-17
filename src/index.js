@@ -56,7 +56,7 @@ function reduxSlimAsync({ dispatch, getState }) {
           },
         ));
 
-        return Promise.reject(getState(), error);
+        return Promise.reject(getState());
       });
   };
 }

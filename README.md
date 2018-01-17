@@ -137,6 +137,23 @@ function fetchData() {
 
 At the current state of the middleware these fields are added outside the payload, this does not conform with the Flux Standard Action directive (it is in the roadmap to make it so).
 
+
+## Update v1.1.0
+
+When calling an action that uses this middleware, you can now use `.then` or `.catch` to concatenate other actions after the current one has been resolved. You then have access to the updated state after the relative success/fail action has been handled by the manager. In your component you will be able to do something like this:
+
+```js
+  import React from 'react';
+  ...
+    componentDidMount() {
+      this.props.actions.fetchMyData()
+        .then(managerState => this.doStuff(managerState.someStateField)))
+        .catch(managerState => this.doErrorStuff(managerState.someErrorStateField));
+    }
+  ...
+
+```
+
 ## RoadMap
 
 - [x] Add test suite
