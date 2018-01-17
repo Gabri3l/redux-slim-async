@@ -1,4 +1,5 @@
 # Redux Slim Async
+[![build status](https://circleci.com/gh/Gabri3l/redux-slim-async.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/Gabri3l/redux-slim-async)
 [![npm version](https://img.shields.io/npm/v/redux-slim-async.svg?style=flat-square)](https://www.npmjs.com/package/redux-slim-async)
 [![npm downloads](https://img.shields.io/npm/dm/redux-slim-async.svg?style=flat-square)](https://www.npmjs.com/package/redux-slim-async)
 
