@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "clean": "cross-env rimraf lib dist es",
+    "clean": "rimraf lib dist es",
     "build": "npm run build:commonjs && npm run build:umd && npm run build:umd:min && npm run build:es",
     "prepare": "npm run clean && npm run test && npm run build",
     "posttest": "npm run lint",
