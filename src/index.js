@@ -1,3 +1,4 @@
+
 function reduxSlimAsync({ dispatch, getState }) {
   return next => (action) => {
     const {
@@ -29,7 +30,7 @@ function reduxSlimAsync({ dispatch, getState }) {
 
     const [pendingType, successType, errorType] = types;
 
-    dispatch(Object.assign({}, payload, { type: pendingType }));
+    dispatch(Object.assign({}, { payload, type: pendingType }));
 
     return callAPI()
       .then((response) => {
@@ -40,9 +41,13 @@ function reduxSlimAsync({ dispatch, getState }) {
 
         dispatch(Object.assign(
           {},
-          payload,
-          formattedData,
-          { type: successType },
+          {
+            type: successType,
+            payload: {
+              ...payload,
+              ...formattedData,
+            },
+          },
         ));
 
         return Promise.resolve(getState());
@@ -50,13 +55,14 @@ function reduxSlimAsync({ dispatch, getState }) {
       .catch(error => {
         dispatch(Object.assign(
           {},
-          payload, {
-            error,
+          {
+            payload: error,
+            error: true,
             type: errorType,
           },
         ));
 
-        return Promise.reject(getState());
+        return Promise.reject(error);
       });
   };
 }
