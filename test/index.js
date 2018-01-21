@@ -1,4 +1,5 @@
 import chai from 'chai';
+import erorrMessages from '../src/errors';
 import slimAsync from '../src/index';
 
 
@@ -50,7 +51,7 @@ describe('reudx-slim-async middleware', () => {
           callAPI: null,
         });
       } catch (err) {
-        chai.assert.strictEqual(err.message, 'Expected callAPI to be a function.');
+        chai.assert.strictEqual(err.message, erorrMessages.callAPI);
       }
     });
 
@@ -65,7 +66,7 @@ describe('reudx-slim-async middleware', () => {
           ],
         });
       } catch (err) {
-        chai.assert.strictEqual(err.message, 'Expected an array of three string types.');
+        chai.assert.strictEqual(err.message, erorrMessages.types);
       }
     });
 
@@ -79,7 +80,7 @@ describe('reudx-slim-async middleware', () => {
           ],
         });
       } catch (err) {
-        chai.assert.strictEqual(err.message, 'Expected an array of three string types.');
+        chai.assert.strictEqual(err.message, erorrMessages.types);
       }
     });
 
@@ -90,7 +91,7 @@ describe('reudx-slim-async middleware', () => {
           formatData: null,
         });
       } catch (err) {
-        chai.assert.strictEqual(err.message, 'Expected formatData to be a function.');
+        chai.assert.strictEqual(err.message, erorrMessages.formatData);
       }
     });
 
@@ -101,7 +102,29 @@ describe('reudx-slim-async middleware', () => {
           formatData: () => null,
         });
       } catch (err) {
-        chai.assert.strictEqual(err.message, 'Expected formatData to return an object.');
+        chai.assert.strictEqual(err.message, erorrMessages.formatDataReturn);
+      }
+    });
+
+    it('must throw if payload is not an object', () => {
+      try {
+        nextHandler()({
+          ...validActionParams,
+          payload: null,
+        });
+      } catch (err) {
+        chai.assert.strictEqual(err.message, erorrMessages.payload);
+      }
+    });
+
+    it('must throw if meta is not an object', () => {
+      try {
+        nextHandler()({
+          ...validActionParams,
+          meta: null,
+        });
+      } catch (err) {
+        chai.assert.strictEqual(err.message, erorrMessages.meta);
       }
     });
   });
