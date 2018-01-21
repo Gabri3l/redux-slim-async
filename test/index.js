@@ -14,6 +14,15 @@ describe('reudx-slim-async middleware', () => {
     ],
     callAPI: () => Promise.resolve({}),
   };
+  const validActionParamsWithOptions = {
+    type: 'REQUEST_DATA',
+    callAPI: () => Promise.resolve({}),
+  };
+  const validOptions = {
+    pendingSuffix: '_PENDING',
+    successSuffix: '_SUCCESS',
+    errorSuffix: '_ERROR',
+  };
   const nextHandler = slimAsync({
     dispatch: doDispatch,
     getState: doGetState,
@@ -62,7 +71,7 @@ describe('reudx-slim-async middleware', () => {
           types: [
             'REQUEST_PENDING',
             'REQUEST_SUCCEDED',
-            true,
+            null,
           ],
         });
       } catch (err) {
@@ -126,6 +135,55 @@ describe('reudx-slim-async middleware', () => {
       } catch (err) {
         chai.assert.strictEqual(err.message, erorrMessages.meta);
       }
+    });
+  });
+
+  describe('with extra options', () => {
+    it('must resolve given valid options', (done) => {
+      slimAsync
+        .withOptions(validOptions)({
+            dispatch: doDispatch,
+            getState: doGetState,
+          })()(validActionParamsWithOptions)
+        .then(() => done());
+    });
+
+    it('must throw given invalid options', () => {
+      try {
+        slimAsync
+          .withOptions({})({
+              dispatch: doDispatch,
+              getState: doGetState,
+            })()(validActionParamsWithOptions);
+      } catch (err) {
+        chai.assert.strictEqual(err.message, erorrMessages.options);
+      }
+    });
+
+    it('must throw if type is defined but not a string', () => {
+      try {
+        slimAsync
+          .withOptions(validOptions)({
+              dispatch: doDispatch,
+              getState: doGetState,
+            })()({
+              ...validActionParamsWithOptions,
+              type: {},
+            });
+      } catch (err) {
+        chai.assert.strictEqual(err.message, erorrMessages.type);
+      }
+    });
+
+    it('must call next if type is not defined', (done) => {
+      slimAsync
+        .withOptions(validOptions)({
+            dispatch: doDispatch,
+            getState: doGetState,
+          })(() => done())({
+            ...validActionParamsWithOptions,
+            type: null,
+          });
     });
   });
 });
