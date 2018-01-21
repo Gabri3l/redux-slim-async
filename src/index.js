@@ -1,4 +1,5 @@
 
+import { isFSA } from 'flux-standard-action';
 import errorMessages from './errors';
 
 function validateInput({
@@ -44,7 +45,7 @@ function reduxSlimAsync({ dispatch, getState }) {
       meta = {},
     } = action;
 
-    if (!types) return next(action);
+    if (!types || !isFSA(action)) return next(action);
     validateInput(action);
     if (!shouldCallAPI(getState())) return null;
 

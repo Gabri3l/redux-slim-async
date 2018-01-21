@@ -158,9 +158,8 @@ When calling an action that uses this middleware, you can now use `.then` or `.c
 
 - [x] Add test suite
 - [x] Add continuous integration
-- [ ] Allow to skip dispatching some of the actions to track status
 - [x] Make the middleware compliant to FSA directives
-- [ ] Use FSA directives to skip action if not FSA compliant
+- [x] Use FSA directives to skip action if not FSA compliant
 - [x] Allow to dispatch other actions after the current one has succeded or errored out
 - [ ] Allow setting up a custom prefix or suffix for action types at initiation time
 
