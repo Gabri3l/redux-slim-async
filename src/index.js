@@ -2,20 +2,33 @@
 import { isFSA } from 'flux-standard-action';
 import errorMessages from './errors';
 
-function validateInput({
-  types,
-  callAPI,
-  formatData = res => res,
-  shouldCallAPI = () => true,
-  payload = {},
-  meta = {},
-}) {
+function validateInput(
+  {
+    type,
+    types,
+    callAPI,
+    formatData = res => res,
+    shouldCallAPI = () => true,
+    payload = {},
+    meta = {},
+  },
+  options,
+) {
   if (
-    !Array.isArray(types) ||
-    types.length !== 3 ||
-    !types.every(type => typeof type === 'string')
+    options === undefined
+    && (
+      !Array.isArray(types)
+      || types.length !== 3
+      || !types.every(type => typeof type === 'string')
+    )
   ) {
     throw new Error(errorMessages.types);
+  }
+  if (
+    options !== undefined
+    && typeof type !== 'string'
+  ) {
+    throw new Error(errorMessages.type);
   }
   if (typeof callAPI !== 'function') {
     throw new Error(errorMessages.callAPI);
@@ -34,9 +47,40 @@ function validateInput({
   }
 }
 
-function reduxSlimAsync({ dispatch, getState }) {
-  return next => (action) => {
+function validateOptions({ pendingSuffix, successSuffix, errorSuffix }) {
+  if (
+    typeof pendingSuffix !== 'string'
+    || typeof successSuffix !== 'string'
+    || typeof errorSuffix !== 'string'
+  ) throw new Error(errorMessages.options)
+}
+
+function optionsAreValid(type, types, options) {
+  if (options === undefined && !types) return false;
+  if (options === undefined && types)  return true;
+  if (options !== undefined && !type) return false;
+  if (options !== undefined && type) {
+    validateOptions(options);
+    return true;
+  }
+  return false;
+}
+
+function getActionTypes(type, types, options) {
+  if (options === undefined) return types;
+  if (options !== undefined) {
+    return [
+      `${type}${options.pendingSuffix}`,
+      `${type}${options.successSuffix}`,
+      `${type}${options.errorSuffix}`,
+    ];
+  }
+}
+
+function createSlimAsyncMiddleware(options) {
+  return ({ dispatch, getState }) => next => (action) => {
     const {
+      type,
       types,
       callAPI,
       formatData = res => res,
@@ -45,13 +89,18 @@ function reduxSlimAsync({ dispatch, getState }) {
       meta = {},
     } = action;
 
-    if (!types || !isFSA(action)) return next(action);
-    validateInput(action);
+    if (!optionsAreValid(type, types, options)) return next(action);
+
+    validateInput(action, options);
+
     if (!shouldCallAPI(getState())) return null;
 
-    const [pendingType, successType, errorType] = types;
+    const [pendingType, successType, errorType] = getActionTypes(type, types, options);
 
-    dispatch(Object.assign({}, { payload, type: pendingType }));
+    const pendingAction = { payload, type: pendingType };
+
+    if (!isFSA(pendingAction)) next(action);
+    else dispatch(pendingAction);
 
     return callAPI()
       .then((response) => {
@@ -60,34 +109,37 @@ function reduxSlimAsync({ dispatch, getState }) {
           throw new Error(errorMessages.formatDataReturn);
         }
 
-        dispatch(Object.assign(
-          {},
-          {
-            type: successType,
-            payload: {
-              ...payload,
-              ...formattedData,
-            },
-            meta,
+        const successAction = {
+          type: successType,
+          payload: {
+            ...payload,
+            ...formattedData,
           },
-        ));
+          meta,
+        };
+
+        if (!isFSA(successAction)) next(action);
+        else dispatch(successAction);
 
         return Promise.resolve(getState());
       })
       .catch(error => {
-        dispatch(Object.assign(
-          {},
-          {
-            payload: error,
-            error: true,
-            type: errorType,
-          },
+        const errorAction = {
+          payload: error,
+          error: true,
+          type: errorType,
           meta,
-        ));
+        }
+
+        if (!isFSA(errorAction)) next(action);
+        else dispatch(errorAction);
 
         return Promise.reject(error);
       });
   };
 }
 
-export default reduxSlimAsync;
+const slimAsync = createSlimAsyncMiddleware();
+slimAsync.withOptions = createSlimAsyncMiddleware;
+
+export default slimAsync;

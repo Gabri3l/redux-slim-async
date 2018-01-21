@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/redux-slim-async.svg?style=flat-square)](https://www.npmjs.com/package/redux-slim-async)
 [![npm downloads](https://img.shields.io/npm/dm/redux-slim-async.svg?style=flat-square)](https://www.npmjs.com/package/redux-slim-async)
 
-A [FSA](https://github.com/acdlite/flux-standard-action)-compliant Redux middleware to ease the pain of tracking the status of an async action.
+A [FSA](https://github.com/acdlite/flux-standard-action)-compliant Redux middleware to ease the pain of tracking the status of an async action. While the compliance seems to break for how the middleware is presented (e.g. it requires a field of `types` instead of just `type`), every action that is dispatched with it is fully FSA-compliant. You can think of this middleware as a more succint way to dispatch FSA-compliant actions that track asyn requests.
 
 ## Install
 
@@ -161,7 +161,8 @@ When calling an action that uses this middleware, you can now use `.then` or `.c
 - [x] Make the middleware compliant to FSA directives
 - [x] Use FSA directives to skip action if not FSA compliant
 - [x] Allow to dispatch other actions after the current one has succeded or errored out
-- [ ] Allow setting up a custom prefix or suffix for action types at initiation time
+- [x] Allow setting up a custom suffix for action types at initiation time
+- [ ] Allow to use middleware even if not FSA compliant at initation time
 
 ## License
 
