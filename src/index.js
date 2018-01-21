@@ -1,4 +1,38 @@
 
+import errorMessages from './errors';
+
+function validateInput({
+  types,
+  callAPI,
+  formatData = res => res,
+  shouldCallAPI = () => true,
+  payload = {},
+  meta = {},
+}) {
+  if (
+    !Array.isArray(types) ||
+    types.length !== 3 ||
+    !types.every(type => typeof type === 'string')
+  ) {
+    throw new Error(errorMessages.types);
+  }
+  if (typeof callAPI !== 'function') {
+    throw new Error(errorMessages.callAPI);
+  }
+  if (typeof formatData !== 'function') {
+    throw new Error(errorMessages.formatData);
+  }
+  if (typeof shouldCallAPI !== 'function') {
+    throw new Error(errorMessages.shouldCallAPI);
+  }
+  if (typeof payload !== 'object') {
+    throw new Error(errorMessages.payload);
+  }
+  if (typeof meta !== 'object') {
+    throw new Error(errorMessages.meta);
+  }
+}
+
 function reduxSlimAsync({ dispatch, getState }) {
   return next => (action) => {
     const {
@@ -7,25 +41,11 @@ function reduxSlimAsync({ dispatch, getState }) {
       formatData = res => res,
       shouldCallAPI = () => true,
       payload = {},
+      meta = {},
     } = action;
 
     if (!types) return next(action);
-    if (
-      !Array.isArray(types) ||
-      types.length !== 3 ||
-      !types.every(type => typeof type === 'string')
-    ) {
-      throw new Error('Expected an array of three string types.');
-    }
-    if (typeof callAPI !== 'function') {
-      throw new Error('Expected callAPI to be a function.');
-    }
-    if (typeof formatData !== 'function') {
-      throw new Error('Expected formatData to be a function.');
-    }
-    if (typeof shouldCallAPI !== 'function') {
-      throw new Error('Expected shouldCallAPI to be a function.');
-    }
+    validateInput(action);
     if (!shouldCallAPI(getState())) return null;
 
     const [pendingType, successType, errorType] = types;
@@ -36,7 +56,7 @@ function reduxSlimAsync({ dispatch, getState }) {
       .then((response) => {
         const formattedData = formatData(response);
         if (typeof formattedData !== 'object') {
-          throw new Error('Expected formatData to return an object.');
+          throw new Error(errorMessages.formatDataReturn);
         }
 
         dispatch(Object.assign(
@@ -47,6 +67,7 @@ function reduxSlimAsync({ dispatch, getState }) {
               ...payload,
               ...formattedData,
             },
+            meta,
           },
         ));
 
@@ -60,6 +81,7 @@ function reduxSlimAsync({ dispatch, getState }) {
             error: true,
             type: errorType,
           },
+          meta,
         ));
 
         return Promise.reject(error);
