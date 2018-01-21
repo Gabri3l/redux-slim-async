@@ -15,7 +15,7 @@ describe('reudx-slim-async middleware', () => {
     callAPI: () => Promise.resolve({}),
   };
   const validActionParamsWithOptions = {
-    type: 'REQUEST_DATA',
+    typePrefix: 'REQUEST_DATA',
     callAPI: () => Promise.resolve({}),
   };
   const validOptions = {
@@ -160,7 +160,7 @@ describe('reudx-slim-async middleware', () => {
       }
     });
 
-    it('must throw if type is defined but not a string', () => {
+    it('must throw if typePrefix is defined but not a string', () => {
       try {
         slimAsync
           .withOptions(validOptions)({
@@ -168,21 +168,21 @@ describe('reudx-slim-async middleware', () => {
               getState: doGetState,
             })()({
               ...validActionParamsWithOptions,
-              type: {},
+              typePrefix: {},
             });
       } catch (err) {
         chai.assert.strictEqual(err.message, erorrMessages.type);
       }
     });
 
-    it('must call next if type is not defined', (done) => {
+    it('must call next if typePrefix is not defined', (done) => {
       slimAsync
         .withOptions(validOptions)({
             dispatch: doDispatch,
             getState: doGetState,
           })(() => done())({
             ...validActionParamsWithOptions,
-            type: null,
+            typePrefix: null,
           });
     });
 

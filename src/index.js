@@ -4,7 +4,7 @@ import errorMessages from './errors';
 
 function validateInput(
   {
-    type,
+    typePrefix,
     types,
     callAPI,
     formatData = res => res,
@@ -26,7 +26,7 @@ function validateInput(
   }
   if (
     options !== undefined
-    && typeof type !== 'string'
+    && typeof typePrefix !== 'string'
   ) {
     throw new Error(errorMessages.type);
   }
@@ -55,23 +55,23 @@ function validateOptions({ pendingSuffix, successSuffix, errorSuffix }) {
   ) throw new Error(errorMessages.options)
 }
 
-function optionsAreValid(type, types, options) {
+function optionsAreValid(typePrefix, types, options) {
   if (options === undefined && !types) return false;
   if (options === undefined && types) return true;
-  if (options !== undefined && !type) return false;
-  if (options !== undefined && type) {
+  if (options !== undefined && !typePrefix) return false;
+  if (options !== undefined && typePrefix) {
     validateOptions(options);
     return true;
   }
   return false;
 }
 
-function getActionTypes(type, types, options) {
+function getActionTypes(typePrefix, types, options) {
   if (options !== undefined) {
     return [
-      `${type}${options.pendingSuffix}`,
-      `${type}${options.successSuffix}`,
-      `${type}${options.errorSuffix}`,
+      `${typePrefix}${options.pendingSuffix}`,
+      `${typePrefix}${options.successSuffix}`,
+      `${typePrefix}${options.errorSuffix}`,
     ];
   }
   return types;
@@ -80,7 +80,7 @@ function getActionTypes(type, types, options) {
 function createSlimAsyncMiddleware(options) {
   return ({ dispatch, getState }) => next => (action) => {
     const {
-      type,
+      typePrefix,
       types,
       callAPI,
       formatData = res => res,
@@ -89,14 +89,14 @@ function createSlimAsyncMiddleware(options) {
       meta = {},
     } = action;
 
-    if (type && !callAPI) return next(action);
-    if (!optionsAreValid(type, types, options)) return next(action);
+    if (typePrefix && !callAPI) return next(action);
+    if (!optionsAreValid(typePrefix, types, options)) return next(action);
 
     validateInput(action, options);
 
     if (!shouldCallAPI(getState())) return null;
 
-    const [pendingType, successType, errorType] = getActionTypes(type, types, options);
+    const [pendingType, successType, errorType] = getActionTypes(typePrefix, types, options);
 
     const pendingAction = { payload, type: pendingType };
 

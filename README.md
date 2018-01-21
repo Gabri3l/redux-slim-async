@@ -30,6 +30,8 @@ const store = createStore(
 export default store;
 ```
 
+Since version 1.3.0 you will be able to add options, through those you can specify each suffix that defines the state of your async request (read more at the bottom).
+
 ## Problem
 
 When handling any kind of asyn requests in Redux most of the time we need to track the state of such request. This means we need to know when the action is pending, completed successfully or completed with errors. A common pattern for it that leverages `redux-thunk` is the following:
@@ -138,7 +140,7 @@ function fetchData() {
 At the current state of the middleware these fields are added outside the payload, this does not conform with the Flux Standard Action directive (it is in the roadmap to make it so).
 
 
-## Update v1.1.0
+## Concatenate actions with Promises or async/await
 
 When calling an action that uses this middleware, you can now use `.then` or `.catch` to concatenate other actions after the current one has been resolved. You then have access to the updated state after the relative success/fail action has been handled by the manager. In your component you will be able to do something like this:
 
@@ -154,6 +156,44 @@ When calling an action that uses this middleware, you can now use `.then` or `.c
 
 ```
 
+## Update v1.3.0
+
+With this updae boilerplate code is reduce even more! Instead of forcing to pass an array of types every time we need to dispatch an aync action, there is now the possibility to define options at initiation time. This means that you can set each suffix you will be using to track `pending`, `success` or `error` status ahead of time. You can do so as follows:
+
+```js
+import { applyMiddleware, createStore, compose } from 'redux';
+import slimAsync from 'redux-slim-async';
+import rootReducer from '../reducers';
+
+const store = createStore(
+  rootReducer,
+  compose(applyMiddleware(slimAsync.withOptions({
+    pendingSuffix: '_PENDING',
+    successSuffix: '_SUCCESS',
+    errorSuffix: '_ERROR',
+  }))),
+);
+
+export default store;
+```
+
+This will allow you to define only the action prefix that is shared across every action dispatched to track the async request status. You will now be able to write:
+
+```js
+function fetchData() {
+  return {
+    typePrefix: FETCH_DATA,
+    callAPI: fetch('https://myapi.com/mydata').then(res => res.json()),
+    shouldCallAPI: (state) => state.myData === null,
+    formatData: (data) => ({
+      favorites: data.favorites,
+      latestFavorite: data.latest_favorite,
+    }),
+  };
+}
+```
+
+The reason why it's called `typePrefix` instead of `type` is to simply avoid confusion. If the field was named `type` like a normal action, I would expect to be able to update the state manager once an action with that exact type has been dispatched, which would never happen. `typePrefix` makes it more clear that there's something more to it as that string only represent the prefix of the full action `type`. This is also the reason why such behavior is provided only when `options` are provided to the middleware.
 ## RoadMap
 
 - [x] Add test suite
