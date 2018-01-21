@@ -19,7 +19,7 @@ function validateInput(
     && (
       !Array.isArray(types)
       || types.length !== 3
-      || !types.every(type => typeof type === 'string')
+      || !types.every(t => typeof t === 'string')
     )
   ) {
     throw new Error(errorMessages.types);
@@ -57,7 +57,7 @@ function validateOptions({ pendingSuffix, successSuffix, errorSuffix }) {
 
 function optionsAreValid(type, types, options) {
   if (options === undefined && !types) return false;
-  if (options === undefined && types)  return true;
+  if (options === undefined && types) return true;
   if (options !== undefined && !type) return false;
   if (options !== undefined && type) {
     validateOptions(options);
@@ -67,7 +67,6 @@ function optionsAreValid(type, types, options) {
 }
 
 function getActionTypes(type, types, options) {
-  if (options === undefined) return types;
   if (options !== undefined) {
     return [
       `${type}${options.pendingSuffix}`,
@@ -75,6 +74,7 @@ function getActionTypes(type, types, options) {
       `${type}${options.errorSuffix}`,
     ];
   }
+  return types;
 }
 
 function createSlimAsyncMiddleware(options) {
@@ -89,6 +89,7 @@ function createSlimAsyncMiddleware(options) {
       meta = {},
     } = action;
 
+    if (type && !callAPI) return next(action);
     if (!optionsAreValid(type, types, options)) return next(action);
 
     validateInput(action, options);
@@ -129,7 +130,7 @@ function createSlimAsyncMiddleware(options) {
           error: true,
           type: errorType,
           meta,
-        }
+        };
 
         if (!isFSA(errorAction)) next(action);
         else dispatch(errorAction);

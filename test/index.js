@@ -185,5 +185,16 @@ describe('reudx-slim-async middleware', () => {
             type: null,
           });
     });
+
+    it('must call next if callAPI is not defined', (done) => {
+      slimAsync
+        .withOptions(validOptions)({
+            dispatch: doDispatch,
+            getState: doGetState,
+          })(() => done())({
+            ...validActionParamsWithOptions,
+            callAPI: null,
+          });
+    });
   });
 });
