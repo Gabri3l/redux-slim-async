@@ -1,3 +1,8 @@
+<p align="center">
+  <img width="200" src="./redux-slim-async.png" alt="redux-slim-async">
+</p>
+
+
 # Redux Slim Async
 [![build status](https://circleci.com/gh/Gabri3l/redux-slim-async.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/Gabri3l/redux-slim-async)
 [![npm version](https://img.shields.io/npm/v/redux-slim-async.svg?style=flat-square)](https://www.npmjs.com/package/redux-slim-async)
