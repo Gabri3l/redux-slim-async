@@ -1,4 +1,3 @@
-
 import { isFSA } from 'flux-standard-action';
 import errorMessages from './errors';
 
@@ -16,18 +15,13 @@ function validateInput(
 ) {
   if (
     options === undefined
-    && (
-      !Array.isArray(types)
+    && (!Array.isArray(types)
       || types.length !== 3
-      || !types.every(t => typeof t === 'string')
-    )
+      || !types.every(t => typeof t === 'string'))
   ) {
     throw new Error(errorMessages.types);
   }
-  if (
-    options !== undefined
-    && typeof typePrefix !== 'string'
-  ) {
+  if (options !== undefined && typeof typePrefix !== 'string') {
     throw new Error(errorMessages.type);
   }
   if (typeof callAPI !== 'function') {
@@ -52,7 +46,8 @@ function validateOptions({ pendingSuffix, successSuffix, errorSuffix }) {
     typeof pendingSuffix !== 'string'
     || typeof successSuffix !== 'string'
     || typeof errorSuffix !== 'string'
-  ) throw new Error(errorMessages.options)
+  )
+    throw new Error(errorMessages.options);
 }
 
 function optionsAreValid(typePrefix, types, options) {
@@ -78,7 +73,7 @@ function getActionTypes(typePrefix, types, options) {
 }
 
 function createSlimAsyncMiddleware(options) {
-  return ({ dispatch, getState }) => next => (action) => {
+  return ({ dispatch, getState }) => next => action => {
     const {
       typePrefix,
       types,
@@ -94,9 +89,13 @@ function createSlimAsyncMiddleware(options) {
 
     validateInput(action, options);
 
-    if (!shouldCallAPI(getState())) return null;
+    if (!shouldCallAPI(getState())) return Promise.resolve(getState());
 
-    const [pendingType, successType, errorType] = getActionTypes(typePrefix, types, options);
+    const [pendingType, successType, errorType] = getActionTypes(
+      typePrefix,
+      types,
+      options,
+    );
 
     const pendingAction = { payload, type: pendingType };
 
@@ -104,7 +103,7 @@ function createSlimAsyncMiddleware(options) {
     else dispatch(pendingAction);
 
     return callAPI()
-      .then((response) => {
+      .then(response => {
         const formattedData = formatData(response);
         if (typeof formattedData !== 'object') {
           throw new Error(errorMessages.formatDataReturn);

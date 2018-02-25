@@ -2,16 +2,11 @@ import chai from 'chai';
 import erorrMessages from '../src/errors';
 import slimAsync from '../src/index';
 
-
 describe('reudx-slim-async middleware', () => {
   const doDispatch = () => {};
   const doGetState = () => {};
   const validActionParams = {
-    types: [
-      'REQUEST_PENDING',
-      'REQUEST_SUCCEDED',
-      'REQUEST_FAILED',
-    ],
+    types: ['REQUEST_PENDING', 'REQUEST_SUCCEDED', 'REQUEST_FAILED'],
     callAPI: () => Promise.resolve({}),
   };
   const validActionParamsWithOptions = {
@@ -41,7 +36,7 @@ describe('reudx-slim-async middleware', () => {
   });
 
   describe('handle next', () => {
-    it('must pass action to next if types is not an array', (done) => {
+    it('must pass action to next if types is not an array', done => {
       const actionObj = {};
       const actionHandler = nextHandler(action => {
         chai.assert.strictEqual(action, actionObj);
@@ -68,11 +63,7 @@ describe('reudx-slim-async middleware', () => {
       try {
         nextHandler()({
           ...validActionParams,
-          types: [
-            'REQUEST_PENDING',
-            'REQUEST_SUCCEDED',
-            null,
-          ],
+          types: ['REQUEST_PENDING', 'REQUEST_SUCCEDED', null],
         });
       } catch (err) {
         chai.assert.strictEqual(err.message, erorrMessages.types);
@@ -83,10 +74,7 @@ describe('reudx-slim-async middleware', () => {
       try {
         nextHandler()({
           ...validActionParams,
-          types: [
-            'REQUEST_PENDING',
-            'REQUEST_SUCCEDED',
-          ],
+          types: ['REQUEST_PENDING', 'REQUEST_SUCCEDED'],
         });
       } catch (err) {
         chai.assert.strictEqual(err.message, erorrMessages.types);
@@ -139,22 +127,21 @@ describe('reudx-slim-async middleware', () => {
   });
 
   describe('with extra options', () => {
-    it('must resolve given valid options', (done) => {
+    it('must resolve given valid options', done => {
       slimAsync
         .withOptions(validOptions)({
-            dispatch: doDispatch,
-            getState: doGetState,
-          })()(validActionParamsWithOptions)
+          dispatch: doDispatch,
+          getState: doGetState,
+        })()(validActionParamsWithOptions)
         .then(() => done());
     });
 
     it('must throw given invalid options', () => {
       try {
-        slimAsync
-          .withOptions({})({
-              dispatch: doDispatch,
-              getState: doGetState,
-            })()(validActionParamsWithOptions);
+        slimAsync.withOptions({})({
+          dispatch: doDispatch,
+          getState: doGetState,
+        })()(validActionParamsWithOptions);
       } catch (err) {
         chai.assert.strictEqual(err.message, erorrMessages.options);
       }
@@ -162,39 +149,36 @@ describe('reudx-slim-async middleware', () => {
 
     it('must throw if typePrefix is defined but not a string', () => {
       try {
-        slimAsync
-          .withOptions(validOptions)({
-              dispatch: doDispatch,
-              getState: doGetState,
-            })()({
-              ...validActionParamsWithOptions,
-              typePrefix: {},
-            });
+        slimAsync.withOptions(validOptions)({
+          dispatch: doDispatch,
+          getState: doGetState,
+        })()({
+          ...validActionParamsWithOptions,
+          typePrefix: {},
+        });
       } catch (err) {
         chai.assert.strictEqual(err.message, erorrMessages.type);
       }
     });
 
-    it('must call next if typePrefix is not defined', (done) => {
-      slimAsync
-        .withOptions(validOptions)({
-            dispatch: doDispatch,
-            getState: doGetState,
-          })(() => done())({
-            ...validActionParamsWithOptions,
-            typePrefix: null,
-          });
+    it('must call next if typePrefix is not defined', done => {
+      slimAsync.withOptions(validOptions)({
+        dispatch: doDispatch,
+        getState: doGetState,
+      })(() => done())({
+        ...validActionParamsWithOptions,
+        typePrefix: null,
+      });
     });
 
-    it('must call next if callAPI is not defined', (done) => {
-      slimAsync
-        .withOptions(validOptions)({
-            dispatch: doDispatch,
-            getState: doGetState,
-          })(() => done())({
-            ...validActionParamsWithOptions,
-            callAPI: null,
-          });
+    it('must call next if callAPI is not defined', done => {
+      slimAsync.withOptions(validOptions)({
+        dispatch: doDispatch,
+        getState: doGetState,
+      })(() => done())({
+        ...validActionParamsWithOptions,
+        callAPI: null,
+      });
     });
   });
 });
