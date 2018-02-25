@@ -33,6 +33,17 @@ describe('reudx-slim-async middleware', () => {
       chai.assert.isFunction(nextHandler()(validActionParams).then);
       chai.assert.isFunction(nextHandler()(validActionParams).catch);
     });
+
+    it('must return a Promise when shouldCallAPI is false', () => {
+      chai.assert.isFunction(
+        nextHandler()({ ...validActionParams, shouldCallAPI: () => false })
+          .then,
+      );
+      chai.assert.isFunction(
+        nextHandler()({ ...validActionParams, shouldCallAPI: () => false })
+          .catch,
+      );
+    });
   });
 
   describe('handle next', () => {
