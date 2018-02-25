@@ -199,6 +199,30 @@ function fetchData() {
 ```
 
 The reason why it's called `typePrefix` instead of `type` is to simply avoid confusion. If the field was named `type` like a normal action, I would expect to be able to update the state manager once an action with that exact type has been dispatched, which would never happen. `typePrefix` makes it more clear that there's something more to it as that string only represent the prefix of the full action `type`. This is also the reason why such behavior is provided only when `options` are provided to the middleware.
+
+Another available option is the one that specifies if the actions should be FSA compliant or not. Such option
+is `true` by default but, when set to false, the payload is directly injected in the body of the action object.
+This means that instead of having an action in the shape of:
+
+```js
+// This is FSA compliant
+
+{
+  type: 'FETCH_DATA_SUCCESS'
+  payload: {
+    entry: "some data",
+    anotherEntry: "some other data",
+  },
+}
+
+// This is not FSA compliant
+{
+  type: 'FETCH_DATA_SUCCESS'
+  entry: "some data",
+  anotherEntry: "some other data",
+}
+```
+
 ## RoadMap
 
 - [x] Add test suite
@@ -207,7 +231,7 @@ The reason why it's called `typePrefix` instead of `type` is to simply avoid con
 - [x] Use FSA directives to skip action if not FSA compliant
 - [x] Allow to dispatch other actions after the current one has succeded or errored out
 - [x] Allow setting up a custom suffix for action types at initiation time
-- [ ] Allow to use middleware even if not FSA compliant at initation time
+- [x] Allow to use middleware even if not FSA compliant at initation time
 
 ## License
 

@@ -83,7 +83,8 @@ function createSlimAsyncMiddleware(options) {
       payload = {},
       meta = {},
     } = action;
-
+    const isFSACompliant
+      = options && options.isFSACompliant === false ? false : true;
     if (typePrefix && !callAPI) return next(action);
     if (!optionsAreValid(typePrefix, types, options)) return next(action);
 
@@ -97,9 +98,11 @@ function createSlimAsyncMiddleware(options) {
       options,
     );
 
-    const pendingAction = { payload, type: pendingType };
+    const pendingAction = isFSACompliant
+      ? { payload, type: pendingType }
+      : { ...payload, type: pendingType };
 
-    if (!isFSA(pendingAction)) next(action);
+    if (isFSACompliant && !isFSA(pendingAction)) next(action);
     else dispatch(pendingAction);
 
     return callAPI()
@@ -109,29 +112,42 @@ function createSlimAsyncMiddleware(options) {
           throw new Error(errorMessages.formatDataReturn);
         }
 
-        const successAction = {
-          type: successType,
-          payload: {
-            ...payload,
-            ...formattedData,
-          },
-          meta,
-        };
+        const successAction = isFSACompliant
+          ? {
+              type: successType,
+              payload: {
+                ...payload,
+                ...formattedData,
+              },
+              meta,
+            }
+          : {
+              type: successType,
+              ...formattedData,
+              meta,
+            };
 
-        if (!isFSA(successAction)) next(action);
+        if (isFSACompliant && !isFSA(successAction)) next(action);
         else dispatch(successAction);
 
         return Promise.resolve(getState());
       })
       .catch(error => {
-        const errorAction = {
-          payload: error,
-          error: true,
-          type: errorType,
-          meta,
-        };
+        const errorAction = isFSACompliant
+          ? {
+              payload: error,
+              error: true,
+              type: errorType,
+              meta,
+            }
+          : {
+              message: error.message,
+              error: true,
+              type: errorType,
+              meta,
+            };
 
-        if (!isFSA(errorAction)) next(action);
+        if (isFSACompliant && !isFSA(errorAction)) next(action);
         else dispatch(errorAction);
 
         return Promise.reject(error);

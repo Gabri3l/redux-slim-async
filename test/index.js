@@ -17,11 +17,17 @@ describe('reudx-slim-async middleware', () => {
     pendingSuffix: '_PENDING',
     successSuffix: '_SUCCESS',
     errorSuffix: '_ERROR',
+    isFSACompliant: true,
   };
   const nextHandler = slimAsync({
     dispatch: doDispatch,
     getState: doGetState,
   });
+  const nextHandlerWithOptions = options =>
+    slimAsync.withOptions(options)({
+      dispatch: doDispatch,
+      getState: doGetState,
+    });
 
   it('must return a function to handle next', () => {
     chai.assert.isFunction(nextHandler);
@@ -92,7 +98,7 @@ describe('reudx-slim-async middleware', () => {
       }
     });
 
-    it('must throw if fromatData is not a function', () => {
+    it('must throw if formatData is not a function', () => {
       try {
         nextHandler()({
           ...validActionParams,
@@ -103,7 +109,7 @@ describe('reudx-slim-async middleware', () => {
       }
     });
 
-    it('must throw if fromatData does not return an object', () => {
+    it('must throw if formatData does not return an object', () => {
       try {
         nextHandler()({
           ...validActionParams,
@@ -189,6 +195,20 @@ describe('reudx-slim-async middleware', () => {
       })(() => done())({
         ...validActionParamsWithOptions,
         callAPI: null,
+      });
+    });
+
+    it('must return a non FSA compliant action if option is set', () => {
+      slimAsync.withOptions({ ...validOptions, isFSACompliant: false })({
+        dispatch: data => {
+          if (data.type === 'REQUEST_DATA_SUCCESS') {
+            chai.assert.strictEqual(data.entry, 'some data');
+          }
+        },
+        getState: doGetState,
+      })()({
+        ...validActionParamsWithOptions,
+        callAPI: () => Promise.resolve({ entry: 'some data' }),
       });
     });
   });
