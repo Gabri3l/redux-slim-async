@@ -132,7 +132,7 @@ function fetchData() {
       FETCH_DATA_SUCCESS,
       FETCH_DATA_ERROR,
     ],
-    callAPI: fetch('https://myapi.com/mydata').then(res => res.json()),
+    callAPI: () => fetch('https://myapi.com/mydata').then(res => res.json()),
     shouldCallAPI: (state) => state.myData === null,
     formatData: (data) => ({
       favorites: data.favorites,
