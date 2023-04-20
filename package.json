@@ -70,7 +70,7 @@
     "mocha": "^10.1.0",
     "redux": "^3.7.2",
     "rimraf": "^2.6.2",
-    "webpack": "^3.10.0"
+    "webpack": "^5.80.0"
   },
   "dependencies": {
     "flux-standard-action": "^2.0.1"
